@@ -230,6 +230,7 @@ public class FinancialTracker {
             }
 
             myReader.close();
+
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
             System.out.println(exception.getMessage());
@@ -237,7 +238,6 @@ public class FinancialTracker {
     }
 
     private static void displayDeposits() {
-        /* TODO – only amount > 0 */
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
@@ -251,6 +251,7 @@ public class FinancialTracker {
             }
 
             myReader.close();
+
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
             System.out.println(exception.getMessage());
@@ -259,7 +260,24 @@ public class FinancialTracker {
     }
 
     private static void displayPayments() {
-        /* TODO – only amount < 0               */
+
+        try {
+            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+            System.out.println("Date        Time       Description                     Vendor                    Amount");
+            System.out.println("---------------------------------------------------------------------------------------");
+
+            for (Transaction transaction : transactions) {
+                if (transaction.getPrice().startsWith("-")) {
+                    System.out.println(transaction);
+                }
+            }
+
+            myReader.close();
+
+        } catch (Exception exception) {
+            System.out.println("Error writing to the file");
+            System.out.println(exception.getMessage());
+        }
     }
 
     /* ------------------------------------------------------------------
