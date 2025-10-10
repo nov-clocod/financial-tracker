@@ -77,9 +77,9 @@ public class FinancialTracker {
                         "11:35:56",
                         "Starting Balance",
                         "Myself",
-                        5.00);
+                        "5.00");
 
-                myWriter.write(String.format("%s|%s|%s|%s|%.2f\n",
+                myWriter.write(String.format("%s|%s|%s|%s|%s\n",
                         firstTransaction.getDate(),
                         firstTransaction.getTime(),
                         firstTransaction.getDescription(),
@@ -97,7 +97,7 @@ public class FinancialTracker {
                     String transactionTime = section[1];
                     String transactionDescription = section[2];
                     String transactionVendor = section[3];
-                    double transactionPrice = Double.parseDouble(section[4]);
+                    String transactionPrice = section[4];
 
                     transactions.add(new Transaction(
                             transactionDate,
@@ -237,7 +237,25 @@ public class FinancialTracker {
     }
 
     private static void displayDeposits() {
-        /* TODO – only amount > 0               */
+        /* TODO – only amount > 0 */
+
+        try {
+            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+            System.out.println("Date        Time       Description                     Vendor                    Amount");
+            System.out.println("---------------------------------------------------------------------------------------");
+
+            for (Transaction transaction : transactions) {
+                if (!transaction.getPrice().startsWith("-")) {
+                    System.out.println(transaction);
+                }
+            }
+
+            myReader.close();
+        } catch (Exception exception) {
+            System.out.println("Error writing to the file");
+            System.out.println(exception.getMessage());
+        }
+
     }
 
     private static void displayPayments() {

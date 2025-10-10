@@ -5,9 +5,9 @@ public class Transaction {
     private String time;
     private String description;
     private String vendor;
-    private double price;
+    private String price;
 
-    public Transaction(String date, String time, String description, String vendor, double price) {
+    public Transaction(String date, String time, String description, String vendor, String price) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -31,13 +31,13 @@ public class Transaction {
         return vendor;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
     @Override
     public String toString() {
-        return String.format("%-10s  %-9s  %-30s  %-20s  %10.2f",
+        return String.format("%-10s  %-9s  %-30s  %-20s  %10s",
         this.date, this.time, this.description, this.vendor, this.price);
     }
 }
