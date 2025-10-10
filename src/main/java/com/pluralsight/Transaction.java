@@ -37,6 +37,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return this.date + "     " + this.time + "     " + this.description + "    " + this.vendor + "        " + this.price;
+        return String.format("%-10s  %-9s  %-30s  %-20s  %10.2f",
+        this.date, this.time, this.description, this.vendor, this.price);
     }
 }

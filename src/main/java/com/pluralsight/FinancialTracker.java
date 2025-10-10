@@ -67,10 +67,11 @@ public class FinancialTracker {
     public static void loadTransactions(String fileName) {
 
         try {
-            BufferedWriter myWriter = new BufferedWriter(new FileWriter(fileName));
             BufferedReader myReader = new BufferedReader(new FileReader(fileName));
+            File file = new File(fileName);
 
-            if (myReader.readLine() == null) {
+            if (!file.exists()) {
+                BufferedWriter myWriter = new BufferedWriter(new FileWriter(fileName));
                 Transaction firstTransaction = new Transaction(
                         "2025-10-10",
                         "11:35:56",
@@ -84,10 +85,30 @@ public class FinancialTracker {
                         firstTransaction.getDescription(),
                         firstTransaction.getVendor(),
                         firstTransaction.getPrice()));
+
+            myWriter.close();
+
+            } else {
+                String line;
+
+                while ((line = myReader.readLine()) != null) {
+                    String[] section = line.split("\\|");
+                    String transactionDate = section[0];
+                    String transactionTime = section[1];
+                    String transactionDescription = section[2];
+                    String transactionVendor = section[3];
+                    double transactionPrice = Double.parseDouble(section[4]);
+
+                    transactions.add(new Transaction(
+                            transactionDate,
+                            transactionTime,
+                            transactionDescription,
+                            transactionVendor,
+                            transactionPrice));
+                }
             }
 
             myReader.close();
-            myWriter.close();
 
         } catch (Exception exception) {
             System.out.println("Oops, something went wrong");
@@ -175,13 +196,12 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println("Ledger");
-            System.out.println("Choose an option:");
             System.out.println("A) All");
             System.out.println("D) Deposits");
             System.out.println("P) Payments");
             System.out.println("R) Reports");
             System.out.println("H) Home");
-
+            System.out.println("Choose an option:");
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
@@ -198,11 +218,31 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
-    private static void displayLedger() { /* TODO – print all transactions in column format */ }
+    private static void displayLedger() {
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */ }
+        try {
+            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+            System.out.println("Date        Time       Description                     Vendor                    Amount");
+            System.out.println("---------------------------------------------------------------------------------------");
 
-    private static void displayPayments() { /* TODO – only amount < 0               */ }
+            for (Transaction transaction : transactions) {
+                System.out.println(transaction);
+            }
+
+            myReader.close();
+        } catch (Exception exception) {
+            System.out.println("Error writing to the file");
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    private static void displayDeposits() {
+        /* TODO – only amount > 0               */
+    }
+
+    private static void displayPayments() {
+        /* TODO – only amount < 0               */
+    }
 
     /* ------------------------------------------------------------------
        Reports menu
