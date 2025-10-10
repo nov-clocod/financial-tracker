@@ -1,5 +1,7 @@
 package com.pluralsight;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +49,7 @@ public class FinancialTracker {
             System.out.println("L) Ledger");
             System.out.println("X) Exit");
 
+            System.out.println("Choose an option:");
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
@@ -86,7 +89,37 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
-        // TODO
+        try {
+            BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
+            System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
+            String userInputDateTime = scanner.nextLine().trim();
+
+            System.out.println("Enter the description of the deposit: ");
+            String userInputDescriptionDeposit = scanner.nextLine().trim();
+
+            System.out.println("Enter the payer/institution's name: ");
+            String userInputVendor = scanner.nextLine().trim();
+
+            System.out.println("Enter the deposit amount: ");
+            double userDepositAmount = scanner.nextDouble();
+            scanner.nextLine();
+
+            String formattedAmount = String.format("%.2f", userDepositAmount);
+            int spacePosition = userInputDateTime.indexOf(" ");
+            myWriter.write(userInputDateTime.substring(0, spacePosition) + "|" +
+                    userInputDateTime.substring(spacePosition + 1) + "|" +
+                    userInputDescriptionDeposit + "|" +
+                    userInputVendor + "|" +
+                    formattedAmount + "\n");
+
+            System.out.println("Deposit recorded\n");
+            myWriter.close();
+
+        } catch (Exception exception) {
+            System.out.println("Error writing to the file");
+            System.out.println(exception.getMessage());
+        }
+
     }
 
     /**
