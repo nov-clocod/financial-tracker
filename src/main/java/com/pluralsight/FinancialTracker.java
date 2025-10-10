@@ -1,7 +1,5 @@
 package com.pluralsight;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -66,22 +64,41 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        File I/O
        ------------------------------------------------------------------ */
-
-    /**
-     * Load transactions from FILE_NAME.
-     * • If the file doesn’t exist, create an empty one so that future writes succeed.
-     * • Each line looks like: date|time|description|vendor|amount
-     */
     public static void loadTransactions(String fileName) {
-        // TODO: create file if it does not exist, then read each line,
-        //       parse the five fields, build a Transaction object,
-        //       and add it to the transactions list.
+
+        try {
+            BufferedWriter myWriter = new BufferedWriter(new FileWriter(fileName));
+            BufferedReader myReader = new BufferedReader(new FileReader(fileName));
+
+            if (myReader.readLine() == null) {
+                Transaction firstTransaction = new Transaction(
+                        "2025-10-10",
+                        "11:35:56",
+                        "Starting Balance",
+                        "Myself",
+                        5.00);
+
+                myWriter.write(String.format("%s|%s|%s|%s|%.2f\n",
+                        firstTransaction.getDate(),
+                        firstTransaction.getTime(),
+                        firstTransaction.getDescription(),
+                        firstTransaction.getVendor(),
+                        firstTransaction.getPrice()));
+            }
+
+            myReader.close();
+            myWriter.close();
+
+        } catch (Exception exception) {
+            System.out.println("Oops, something went wrong");
+            System.out.println(exception.getMessage());
+        }
+
     }
 
     /* ------------------------------------------------------------------
        Add new transactions
        ------------------------------------------------------------------ */
-
     private static void addDeposit(Scanner scanner) {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
