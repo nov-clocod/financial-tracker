@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 /*
@@ -35,6 +36,7 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
         loadTransactions(FILE_NAME);
+        transactions.sort(Collections.reverseOrder());
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -138,11 +140,22 @@ public class FinancialTracker {
 
             String formattedAmount = String.format("%.2f", userDepositAmount);
             int spacePosition = userInputDateTime.indexOf(" ");
-            myWriter.write(userInputDateTime.substring(0, spacePosition) + "|" +
-                    userInputDateTime.substring(spacePosition + 1) + "|" +
+            LocalDate userInputDate = LocalDate.parse((userInputDateTime.substring(0, spacePosition)));
+            LocalTime userInputTime = LocalTime.parse((userInputDateTime.substring(spacePosition + 1)));
+
+            myWriter.write(userInputDate + "|" +
+                    userInputTime + "|" +
                     userInputDescriptionDeposit + "|" +
                     userInputVendor + "|" +
                     formattedAmount + "\n");
+
+            transactions.add(new Transaction(userInputDate,
+                    userInputTime,
+                    userInputDescriptionDeposit,
+                    userInputVendor,
+                    userDepositAmount));
+
+            transactions.sort(Collections.reverseOrder());
 
             System.out.println("Deposit recorded\n");
             myWriter.close();
@@ -173,11 +186,22 @@ public class FinancialTracker {
 
             String formattedAmount = String.format("-%.2f", userDepositAmount);
             int spacePosition = userInputDateTime.indexOf(" ");
-            myWriter.write(userInputDateTime.substring(0, spacePosition) + "|" +
-                    userInputDateTime.substring(spacePosition + 1) + "|" +
+            LocalDate userInputDate = LocalDate.parse((userInputDateTime.substring(0, spacePosition)));
+            LocalTime userInputTime = LocalTime.parse((userInputDateTime.substring(spacePosition + 1)));
+
+            myWriter.write(userInputDate + "|" +
+                    userInputTime + "|" +
                     userInputDescriptionDeposit + "|" +
                     userInputVendor + "|" +
                     formattedAmount + "\n");
+
+            transactions.add(new Transaction(userInputDate,
+                    userInputTime,
+                    userInputDescriptionDeposit,
+                    userInputVendor,
+                    userDepositAmount));
+
+            transactions.sort(Collections.reverseOrder());
 
             System.out.println("Payment recorded\n");
             myWriter.close();

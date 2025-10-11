@@ -2,7 +2,7 @@ package com.pluralsight;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
     private LocalDate date;
     private LocalTime time;
     private String description;
@@ -41,5 +41,11 @@ public class Transaction {
     public String toString() {
         return String.format("%-10s  %-9s  %-30s  %-20s  %10.2f",
         this.date, this.time, this.description, this.vendor, this.price);
+    }
+
+    @Override
+    public int compareTo(Transaction anotherDate) {
+        int compareDate = this.date.compareTo(anotherDate.date);
+        return (compareDate != 0) ? compareDate : this.time.compareTo(anotherDate.time);
     }
 }
