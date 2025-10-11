@@ -73,11 +73,11 @@ public class FinancialTracker {
             if (!file.exists()) {
                 BufferedWriter myWriter = new BufferedWriter(new FileWriter(fileName));
                 Transaction firstTransaction = new Transaction(
-                        "2025-10-10",
-                        "11:35:56",
+                        LocalDate.parse("2025-10-10", DATE_FMT),
+                        LocalTime.parse("11:35:56", TIME_FMT),
                         "Starting Balance",
                         "Myself",
-                        "5.00");
+                        5.00);
 
                 myWriter.write(String.format("%s|%s|%s|%s|%s\n",
                         firstTransaction.getDate(),
@@ -93,11 +93,11 @@ public class FinancialTracker {
 
                 while ((line = myReader.readLine()) != null) {
                     String[] section = line.split("\\|");
-                    String transactionDate = section[0];
-                    String transactionTime = section[1];
+                    LocalDate transactionDate = LocalDate.parse(section[0]);
+                    LocalTime transactionTime = LocalTime.parse(section[1]);
                     String transactionDescription = section[2];
                     String transactionVendor = section[3];
-                    String transactionPrice = section[4];
+                    double transactionPrice = Double.parseDouble(section[4]);
 
                     transactions.add(new Transaction(
                             transactionDate,
@@ -245,7 +245,8 @@ public class FinancialTracker {
             System.out.println("---------------------------------------------------------------------------------------");
 
             for (Transaction transaction : transactions) {
-                if (!transaction.getPrice().startsWith("-")) {
+                String priceString = String.valueOf(transaction.getPrice());
+                if (!priceString.startsWith("-")) {
                     System.out.println(transaction);
                 }
             }
@@ -267,7 +268,8 @@ public class FinancialTracker {
             System.out.println("---------------------------------------------------------------------------------------");
 
             for (Transaction transaction : transactions) {
-                if (transaction.getPrice().startsWith("-")) {
+                String priceString = String.valueOf(transaction.getPrice());
+                if (priceString.startsWith("-")) {
                     System.out.println(transaction);
                 }
             }
@@ -287,7 +289,6 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println("Reports");
-            System.out.println("Choose an option:");
             System.out.println("1) Month To Date");
             System.out.println("2) Previous Month");
             System.out.println("3) Year To Date");
@@ -295,11 +296,11 @@ public class FinancialTracker {
             System.out.println("5) Search by Vendor");
             System.out.println("6) Custom Search");
             System.out.println("0) Back");
-
+            System.out.println("Choose an option:");
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> {/* TODO – month-to-date report */ }
+                case "1" -> monthToDateReport();
                 case "2" -> {/* TODO – previous month report */ }
                 case "3" -> {/* TODO – year-to-date report   */ }
                 case "4" -> {/* TODO – previous year report  */ }
@@ -311,11 +312,24 @@ public class FinancialTracker {
         }
     }
 
+    private static void monthToDateReport() {
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate today = LocalDate.now();
+
+        filterTransactionsByDate(firstDayOfMonth, today);
+    }
+
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
         // TODO – iterate transactions, print those within the range
+        for (Transaction transaction : transactions) {
+            if ((transaction.getDate().isAfter(start) || transaction.getDate().isEqual(start)) &&
+                    (transaction.getDate().isBefore(end)  || transaction.getDate().isEqual(end))) {
+                System.out.println(transaction);
+            }
+        }
     }
 
     private static void filterTransactionsByVendor(String vendor) {
@@ -331,8 +345,12 @@ public class FinancialTracker {
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
     private static LocalDate parseDate(String s) {
-        /* TODO – return LocalDate or null */
-        return null;
+
+        if (s == null) {
+            return null;
+        } else {
+            return LocalDate.parse(s, DATE_FMT);
+        }
     }
 
     private static Double parseDouble(String s) {

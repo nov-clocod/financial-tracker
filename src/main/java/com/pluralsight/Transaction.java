@@ -1,13 +1,15 @@
 package com.pluralsight;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Transaction {
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
     private String description;
     private String vendor;
-    private String price;
+    private double price;
 
-    public Transaction(String date, String time, String description, String vendor, String price) {
+    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double price) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -15,11 +17,11 @@ public class Transaction {
         this.price = price;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
@@ -31,13 +33,13 @@ public class Transaction {
         return vendor;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
     @Override
     public String toString() {
-        return String.format("%-10s  %-9s  %-30s  %-20s  %10s",
+        return String.format("%-10s  %-9s  %-30s  %-20s  %10.2f",
         this.date, this.time, this.description, this.vendor, this.price);
     }
 }
