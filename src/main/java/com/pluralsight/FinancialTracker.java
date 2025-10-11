@@ -303,13 +303,20 @@ public class FinancialTracker {
                 case "1" -> monthToDateReport();
                 case "2" -> previousMonthReport();
                 case "3" -> yearToDateReport();
-                case "4" -> {/* TODO – previous year report  */ }
+                case "4" -> previousYearReport();
                 case "5" -> {/* TODO – prompt for vendor then report */ }
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
             }
         }
+    }
+
+    private static void previousYearReport() {
+        LocalDate firstDayOfLastYear = LocalDate.now().minusYears(1).withDayOfYear(1);
+        LocalDate lastDayOfLastYear = LocalDate.now().withDayOfYear(1).minusDays(1);
+
+        filterTransactionsByDate(firstDayOfLastYear, lastDayOfLastYear);
     }
 
     private static void yearToDateReport() {
