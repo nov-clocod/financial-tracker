@@ -301,7 +301,7 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1" -> monthToDateReport();
-                case "2" -> {/* TODO – previous month report */ }
+                case "2" -> previousMonthReport();
                 case "3" -> {/* TODO – year-to-date report   */ }
                 case "4" -> {/* TODO – previous year report  */ }
                 case "5" -> {/* TODO – prompt for vendor then report */ }
@@ -310,6 +310,13 @@ public class FinancialTracker {
                 default -> System.out.println("Invalid option");
             }
         }
+    }
+
+    private static void previousMonthReport() {
+        LocalDate firstDayOfLastMonth = LocalDate.now().minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = LocalDate.now().withDayOfMonth(1).minusDays(1);
+
+        filterTransactionsByDate(firstDayOfLastMonth, lastDayOfLastMonth);
     }
 
     private static void monthToDateReport() {
