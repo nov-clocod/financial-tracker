@@ -222,8 +222,7 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-            System.out.println("Date        Time       Description                     Vendor                    Amount");
-            System.out.println("---------------------------------------------------------------------------------------");
+            tableHeader();
 
             for (Transaction transaction : transactions) {
                 System.out.println(transaction);
@@ -241,8 +240,7 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-            System.out.println("Date        Time       Description                     Vendor                    Amount");
-            System.out.println("---------------------------------------------------------------------------------------");
+            tableHeader();
 
             for (Transaction transaction : transactions) {
                 String priceString = String.valueOf(transaction.getPrice());
@@ -264,8 +262,7 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-            System.out.println("Date        Time       Description                     Vendor                    Amount");
-            System.out.println("---------------------------------------------------------------------------------------");
+            tableHeader();
 
             for (Transaction transaction : transactions) {
                 String priceString = String.valueOf(transaction.getPrice());
@@ -304,12 +301,19 @@ public class FinancialTracker {
                 case "2" -> previousMonthReport();
                 case "3" -> yearToDateReport();
                 case "4" -> previousYearReport();
-                case "5" -> {/* TODO – prompt for vendor then report */ }
+                case "5" -> vendorSearch(scanner);
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
             }
         }
+    }
+
+    private static void vendorSearch(Scanner scanner) {
+        System.out.println("Enter the vendor's name: ");
+        String inputVendor = scanner.nextLine();
+
+        filterTransactionsByVendor(inputVendor);
     }
 
     private static void previousYearReport() {
@@ -344,7 +348,8 @@ public class FinancialTracker {
        Reporting helpers
        ------------------------------------------------------------------ */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        // TODO – iterate transactions, print those within the range
+
+        tableHeader();
         for (Transaction transaction : transactions) {
             if ((transaction.getDate().isAfter(start) || transaction.getDate().isEqual(start)) &&
                     (transaction.getDate().isBefore(end)  || transaction.getDate().isEqual(end))) {
@@ -354,12 +359,24 @@ public class FinancialTracker {
     }
 
     private static void filterTransactionsByVendor(String vendor) {
-        // TODO – iterate transactions, print those with matching vendor
+
+        tableHeader();
+        for (Transaction transaction : transactions) {
+            if (transaction.getVendor().equalsIgnoreCase(vendor)) {
+                System.out.println(transaction);
+            }
+        }
     }
 
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
+    }
+
+    private static void tableHeader() {
+        System.out.println();
+        System.out.println("Date        Time       Description                     Vendor                    Amount");
+        System.out.println("---------------------------------------------------------------------------------------");
     }
 
     /* ------------------------------------------------------------------
