@@ -43,8 +43,9 @@ public class FinancialTracker {
         boolean running = true;
 
         while (running) {
+            System.out.println();
             System.out.println("Welcome to TransactionApp");
-            System.out.println("Choose an option:");
+            System.out.println("-------------------------");
             System.out.println("D) Add Deposit");
             System.out.println("P) Make Payment (Debit)");
             System.out.println("L) Ledger");
@@ -225,7 +226,8 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
-            System.out.println("Ledger");
+            System.out.println("Ledger Menu");
+            System.out.println("-----------");
             System.out.println("A) All");
             System.out.println("D) Deposits");
             System.out.println("P) Payments");
@@ -343,7 +345,9 @@ public class FinancialTracker {
     private static void reportsMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
+            System.out.println();
             System.out.println("Reports");
+            System.out.println("-------");
             System.out.println("1) Month To Date");
             System.out.println("2) Previous Month");
             System.out.println("3) Year To Date");
@@ -362,14 +366,14 @@ public class FinancialTracker {
                 case "5" -> vendorSearch(scanner);
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
-                default -> System.out.println("Invalid option");
+                default -> System.out.println("Invalid option\n");
             }
         }
     }
 
     private static void vendorSearch(Scanner scanner) {
         System.out.println("Enter the vendor's name: ");
-        String inputVendor = scanner.nextLine();
+        String inputVendor = scanner.nextLine().trim().toLowerCase();
 
         filterTransactionsByVendor(inputVendor);
     }
@@ -408,26 +412,41 @@ public class FinancialTracker {
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
 
         tableHeader();
+
+        boolean found = false;
         for (Transaction transaction : transactions) {
             if ((transaction.getDate().isAfter(start) || transaction.getDate().isEqual(start)) &&
                     (transaction.getDate().isBefore(end)  || transaction.getDate().isEqual(end))) {
                 System.out.println(transaction);
+                found = true;
             }
+        }
+
+        if (!found) {
+            System.out.printf("No transaction found from %s to %s!\n", start, end);
         }
     }
 
     private static void filterTransactionsByVendor(String vendor) {
 
         tableHeader();
+        boolean found = false;
+
         for (Transaction transaction : transactions) {
-            if (transaction.getVendor().equalsIgnoreCase(vendor)) {
+            if (transaction.getVendor().toLowerCase().contains(vendor)) {
                 System.out.println(transaction);
+                found = true;
             }
+        }
+
+        if (!found) {
+            System.out.printf("No vendor found matching your search: %s!\n", vendor);
         }
     }
 
     private static void customSearch(Scanner scanner) {
 
+        System.out.println();
         System.out.println("Enter start date (yyyy-MM-dd) blank=none: ");
         LocalDate searchStartDate = parseDate(scanner.nextLine().trim());
 
@@ -444,19 +463,23 @@ public class FinancialTracker {
         String amountInput = scanner.nextLine().trim();
         Double searchAmount = parseDouble(amountInput);
 
+        boolean found = false;
 
         if (searchStartDate == null && searchEndDate == null && searchDescription.isEmpty()
                 && searchVendor.isEmpty() && searchAmount == null) {
-            System.out.println("No filters applied, returning all transactions");
             tableHeader();
             for (Transaction transaction : transactions) {
                 System.out.println(transaction);
+                found = true;
             }
-            System.out.println();
+
+            if (!found) {
+                System.out.println("Returning all transactions, No transaction history found!");
+            }
+
         } else {
-            boolean found = false;
-            // Performs like a filter action. For each transaction, it is defaulted to print out, but
-            // if any conditions that acts like a filter matches it will not print out the transaction.
+            // Performs like a filter action. For each transaction, it is defaulted to print out,
+            // if any conditions matches it will filter out the transaction.
             for (Transaction transaction : transactions) {
                 boolean isMatch = true;
 
@@ -488,10 +511,10 @@ public class FinancialTracker {
                     found = true;
                 }
             }
-            System.out.println();
 
             if (!found) {
-                System.out.println("No transaction found based on your search criteria\n");
+                tableHeader();
+                System.out.println("No transaction found based on your search criteria");
             }
 
         }
