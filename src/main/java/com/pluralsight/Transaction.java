@@ -7,14 +7,14 @@ public class Transaction implements Comparable<Transaction> {
     private LocalTime time;
     private String description;
     private String vendor;
-    private double price;
+    private double amount;
 
-    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double price) {
+    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
         this.description = description;
         this.vendor = vendor;
-        this.price = price;
+        this.amount = amount;
     }
 
     public LocalDate getDate() {
@@ -33,14 +33,14 @@ public class Transaction implements Comparable<Transaction> {
         return vendor;
     }
 
-    public double getPrice() {
-        return price;
+    public double getAmount() {
+        return amount;
     }
 
     @Override
     public String toString() {
         return String.format("%-10s  %-9s  %-30s  %-20s  %10.2f",
-        this.date, this.time, this.description, this.vendor, this.price);
+        this.date, this.time, this.description, this.vendor, this.amount);
     }
 
     @Override

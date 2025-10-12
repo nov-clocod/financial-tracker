@@ -86,7 +86,7 @@ public class FinancialTracker {
                         firstTransaction.getTime(),
                         firstTransaction.getDescription(),
                         firstTransaction.getVendor(),
-                        firstTransaction.getPrice()));
+                        firstTransaction.getAmount()));
 
             myWriter.close();
 
@@ -267,7 +267,7 @@ public class FinancialTracker {
             tableHeader();
 
             for (Transaction transaction : transactions) {
-                String priceString = String.valueOf(transaction.getPrice());
+                String priceString = String.valueOf(transaction.getAmount());
                 if (!priceString.startsWith("-")) {
                     System.out.println(transaction);
                 }
@@ -289,7 +289,7 @@ public class FinancialTracker {
             tableHeader();
 
             for (Transaction transaction : transactions) {
-                String priceString = String.valueOf(transaction.getPrice());
+                String priceString = String.valueOf(transaction.getAmount());
                 if (priceString.startsWith("-")) {
                     System.out.println(transaction);
                 }
@@ -393,8 +393,75 @@ public class FinancialTracker {
     }
 
     private static void customSearch(Scanner scanner) {
-        // TODO – prompt for any combination of date range, description,
-        //        vendor, and exact amount, then display matches
+
+        System.out.println("Enter start date (yyyy-MM-dd) blank=none: ");
+        LocalDate searchStartDate = parseDate(scanner.nextLine().trim());
+
+        System.out.println("Enter end date (yyyy-MM-dd) blank=none: ");
+        LocalDate searchEndDate = parseDate(scanner.nextLine().trim());
+
+        System.out.println("Enter the description of the transaction blank=none: ");
+        String searchDescription = scanner.nextLine().trim();
+
+        System.out.println("Enter the vendor/payee of the transaction blank=none: ");
+        String searchVendor = scanner.nextLine().trim();
+
+        System.out.println("Enter the payment amount of the transaction blank=none: ");
+        String amountInput = scanner.nextLine().trim();
+        Double searchAmount = parseDouble(amountInput);
+
+
+        if (searchStartDate == null && searchEndDate == null && searchDescription.isEmpty()
+                && searchVendor.isEmpty() && searchAmount == null) {
+            System.out.println("No filters applied, returning all transactions");
+            tableHeader();
+            for (Transaction transaction : transactions) {
+                System.out.println(transaction);
+            }
+            System.out.println();
+        } else {
+            boolean found = false;
+            // Performs like a filter action. For each transaction, it is defaulted to print out, but
+            // if any conditions that acts like a filter matches it will not print out the transaction.
+            for (Transaction transaction : transactions) {
+                boolean isMatch = true;
+
+                if (searchStartDate != null && transaction.getDate().isBefore(searchStartDate)) {
+                    isMatch = false;
+                }
+
+                if (searchEndDate != null && transaction.getDate().isAfter(searchEndDate)) {
+                    isMatch = false;
+                }
+
+                if (!searchDescription.isEmpty() &&
+                        !transaction.getDescription().toLowerCase().contains(searchDescription.toLowerCase())) {
+                    isMatch = false;
+                }
+
+                if (!searchVendor.isEmpty()
+                        && !transaction.getVendor().toLowerCase().contains(searchVendor.toLowerCase())) {
+                    isMatch = false;
+                }
+
+                if (searchAmount != null && transaction.getAmount() != searchAmount) {
+                    isMatch = false;
+                }
+
+                if (isMatch) {
+                    tableHeader();
+                    System.out.println(transaction);
+                    found = true;
+                }
+            }
+            System.out.println();
+
+            if (!found) {
+                System.out.println("No transaction found based on your search criteria\n");
+            }
+
+        }
+
     }
 
     private static void tableHeader() {
@@ -408,7 +475,7 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     private static LocalDate parseDate(String s) {
 
-        if (s == null) {
+        if (s.isEmpty()) {
             return null;
         } else {
             return LocalDate.parse(s, DATE_FMT);
@@ -416,7 +483,11 @@ public class FinancialTracker {
     }
 
     private static Double parseDouble(String s) {
-        /* TODO – return Double   or null */
-        return null;
+
+        if (s == null || s.isEmpty()) {
+            return null;
+        } else {
+            return Double.parseDouble(s);
+        }
     }
 }
