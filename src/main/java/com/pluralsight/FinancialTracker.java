@@ -52,13 +52,17 @@ public class FinancialTracker {
 
             System.out.println("Choose an option:");
             String input = scanner.nextLine().trim();
+            System.out.println();
 
             switch (input.toUpperCase()) {
                 case "D" -> addDeposit(scanner);
                 case "P" -> addPayment(scanner);
                 case "L" -> ledgerMenu(scanner);
-                case "X" -> running = false;
-                default -> System.out.println("Invalid option");
+                case "X" -> {
+                    running = false;
+                    System.out.println("“Thanks for using our app! We hope to see you again soon.");
+                }
+                default -> System.out.println("Invalid option\n");
             }
         }
         scanner.close();
@@ -164,7 +168,7 @@ public class FinancialTracker {
 
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
-            System.out.println(exception.getMessage());
+            System.out.println(exception.getMessage() + "\n");
         }
 
     }
@@ -210,7 +214,7 @@ public class FinancialTracker {
 
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
-            System.out.println(exception.getMessage());
+            System.out.println(exception.getMessage() + "\n");
         }
 
     }
@@ -236,7 +240,7 @@ public class FinancialTracker {
                 case "P" -> displayPayments();
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
-                default -> System.out.println("Invalid option");
+                default -> System.out.println("Invalid option\n");
             }
         }
     }
@@ -248,17 +252,27 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+
             tableHeader();
+            boolean found = false;
 
             for (Transaction transaction : transactions) {
                 System.out.println(transaction);
+                found = true;
+            }
+
+
+            if (!found) {
+                System.out.println("No transaction history found! Go make your first deposit or payment!\n");
+            } else {
+                System.out.println();
             }
 
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Error writing to the file");
-            System.out.println(exception.getMessage());
+            System.out.println("Error reading the file");
+            System.out.println(exception.getMessage() + "\n");
         }
     }
 
@@ -266,20 +280,29 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+
             tableHeader();
+            boolean found = false;
 
             for (Transaction transaction : transactions) {
                 String priceString = String.valueOf(transaction.getAmount());
                 if (!priceString.startsWith("-")) {
                     System.out.println(transaction);
+                    found =true;
                 }
+            }
+
+            System.out.println();
+
+            if (!found) {
+                System.out.println("No deposit history found! Go make your first deposit!\n");
             }
 
             myReader.close();
 
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
-            System.out.println(exception.getMessage());
+            System.out.println(exception.getMessage() + "\n");
         }
 
     }
@@ -288,20 +311,29 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
+
             tableHeader();
+            boolean found = false;
 
             for (Transaction transaction : transactions) {
                 String priceString = String.valueOf(transaction.getAmount());
                 if (priceString.startsWith("-")) {
                     System.out.println(transaction);
+                    found = true;
                 }
+            }
+
+            System.out.println();
+
+            if (!found) {
+                System.out.println("No payment history found! Go make your first payment!\n");
             }
 
             myReader.close();
 
         } catch (Exception exception) {
             System.out.println("Error writing to the file");
-            System.out.println(exception.getMessage());
+            System.out.println(exception.getMessage() + "\n");
         }
     }
 
