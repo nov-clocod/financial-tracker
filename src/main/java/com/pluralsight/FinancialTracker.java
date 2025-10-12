@@ -1,6 +1,7 @@
 package com.pluralsight;
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -126,33 +127,34 @@ public class FinancialTracker {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
-            String userInputDateTime = scanner.nextLine().trim();
+            String stringInputDepositDateTime = scanner.nextLine().trim();
+            String formattedDepositDateTime = String.valueOf(LocalDateTime.parse(stringInputDepositDateTime, DATETIME_FMT));
 
             System.out.println("Enter the description of the deposit: ");
-            String userInputDescriptionDeposit = scanner.nextLine().trim();
+            String userDepositDescription = scanner.nextLine().trim();
 
             System.out.println("Enter the payer/institution's name: ");
-            String userInputVendor = scanner.nextLine().trim();
+            String userDepositVendor = scanner.nextLine().trim();
 
-            System.out.println("Enter the deposit amount: ");
-            double userDepositAmount = scanner.nextDouble();
-            scanner.nextLine();
+            System.out.println("Enter the deposit amount (positive number): ");
+            String stringInputDepositAmount = scanner.nextLine().trim();
+            double userDepositAmount = parseDouble(stringInputDepositAmount);
 
-            String formattedAmount = String.format("%.2f", userDepositAmount);
-            int spacePosition = userInputDateTime.indexOf(" ");
-            LocalDate userInputDate = LocalDate.parse((userInputDateTime.substring(0, spacePosition)));
-            LocalTime userInputTime = LocalTime.parse((userInputDateTime.substring(spacePosition + 1)));
+            int spacePosition = formattedDepositDateTime.indexOf("T");
+            LocalDate userDepositDate = LocalDate.parse((formattedDepositDateTime.substring(0, spacePosition)));
+            LocalTime userDepositTime = LocalTime.parse((formattedDepositDateTime.substring(spacePosition + 1)));
 
-            myWriter.write(userInputDate + "|" +
-                    userInputTime + "|" +
-                    userInputDescriptionDeposit + "|" +
-                    userInputVendor + "|" +
-                    formattedAmount + "\n");
+            myWriter.write(userDepositDate + "|" +
+                    userDepositTime + "|" +
+                    userDepositDescription + "|" +
+                    userDepositVendor + "|" +
+                    userDepositAmount + "\n");
 
-            transactions.add(new Transaction(userInputDate,
-                    userInputTime,
-                    userInputDescriptionDeposit,
-                    userInputVendor,
+            transactions.add(new Transaction(
+                    userDepositDate,
+                    userDepositTime,
+                    userDepositDescription,
+                    userDepositVendor,
                     userDepositAmount));
 
             transactions.sort(Collections.reverseOrder());
@@ -172,34 +174,34 @@ public class FinancialTracker {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
-            String userInputDateTime = scanner.nextLine().trim();
+            String stringInputPaymentDateTime = scanner.nextLine().trim();
+            String formattedPaymentDateTime = String.valueOf(LocalDateTime.parse(stringInputPaymentDateTime, DATETIME_FMT));
 
             System.out.println("Enter the description of the payment: ");
-            String userInputDescriptionDeposit = scanner.nextLine().trim();
+            String userPaymentDescription = scanner.nextLine().trim();
 
             System.out.println("Enter the payee/institution's name: ");
-            String userInputVendor = scanner.nextLine().trim();
+            String userPaymentVendor = scanner.nextLine().trim();
 
-            System.out.println("Enter the payment amount: ");
-            double userDepositAmount = scanner.nextDouble();
-            scanner.nextLine();
+            System.out.println("Enter the payment amount (positive number): ");
+            String stringInputDepositAmount = scanner.nextLine().trim();
+            double userPaymentAmount = parseDouble("-" + stringInputDepositAmount);
 
-            String formattedAmount = String.format("-%.2f", userDepositAmount);
-            int spacePosition = userInputDateTime.indexOf(" ");
-            LocalDate userInputDate = LocalDate.parse((userInputDateTime.substring(0, spacePosition)));
-            LocalTime userInputTime = LocalTime.parse((userInputDateTime.substring(spacePosition + 1)));
+            int spacePosition = formattedPaymentDateTime.indexOf("T");
+            LocalDate userPaymentDate = LocalDate.parse((formattedPaymentDateTime.substring(0, spacePosition)));
+            LocalTime userPaymentTime = LocalTime.parse((formattedPaymentDateTime.substring(spacePosition + 1)));
 
-            myWriter.write(userInputDate + "|" +
-                    userInputTime + "|" +
-                    userInputDescriptionDeposit + "|" +
-                    userInputVendor + "|" +
-                    formattedAmount + "\n");
+            myWriter.write(userPaymentDate + "|" +
+                    userPaymentTime + "|" +
+                    userPaymentDescription + "|" +
+                    userPaymentVendor + "|" +
+                    userPaymentAmount + "\n");
 
-            transactions.add(new Transaction(userInputDate,
-                    userInputTime,
-                    userInputDescriptionDeposit,
-                    userInputVendor,
-                    userDepositAmount));
+            transactions.add(new Transaction(userPaymentDate,
+                    userPaymentTime,
+                    userPaymentDescription,
+                    userPaymentVendor,
+                    userPaymentAmount));
 
             transactions.sort(Collections.reverseOrder());
 
