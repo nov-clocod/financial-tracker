@@ -8,16 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-/*
- * Capstone skeleton – personal finance tracker.
- * ------------------------------------------------
- * File format  (pipe-delimited)
- *     yyyy-MM-dd|HH:mm:ss|description|vendor|amount
- * A deposit has a positive amount; a payment is stored
- * as a negative amount.
- */
 public class FinancialTracker {
-
     /* ------------------------------------------------------------------
        Shared data and formatters
        ------------------------------------------------------------------ */
@@ -31,13 +22,14 @@ public class FinancialTracker {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern(DATE_PATTERN);
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern(TIME_PATTERN);
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
-
     /* ------------------------------------------------------------------
        Main menu
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
         loadTransactions(FILE_NAME);
         transactions.sort(Collections.reverseOrder());
+
+        displayWelcomeArt();
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -68,7 +60,6 @@ public class FinancialTracker {
         }
         scanner.close();
     }
-
     /* ------------------------------------------------------------------
        File I/O
        ------------------------------------------------------------------ */
@@ -107,30 +98,6 @@ public class FinancialTracker {
             System.out.println(exception.getMessage());
         }
 
-    }
-
-    private static void createTransactionsFile() {
-        try {
-            BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME));
-            Transaction firstTransaction = new Transaction(
-                    LocalDate.parse("2025-10-10", DATE_FMT),
-                    LocalTime.parse("11:35:56", TIME_FMT),
-                    "Starting Balance",
-                    "Myself",
-                    5.00);
-
-            myWriter.write(String.format("%s|%s|%s|%s|%s\n",
-                    firstTransaction.getDate(),
-                    firstTransaction.getTime(),
-                    firstTransaction.getDescription(),
-                    firstTransaction.getVendor(),
-                    firstTransaction.getAmount()));
-
-            myWriter.close();
-        } catch (Exception exception) {
-            System.out.println("Error creating File");
-            System.out.println(exception.getMessage());
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -420,8 +387,8 @@ public class FinancialTracker {
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
 
         tableHeader();
-
         boolean found = false;
+
         for (Transaction transaction : transactions) {
             if ((transaction.getDate().isAfter(start) || transaction.getDate().isEqual(start)) &&
                     (transaction.getDate().isBefore(end)  || transaction.getDate().isEqual(end))) {
@@ -533,10 +500,60 @@ public class FinancialTracker {
         }
     }
 
+    /* ------------------------------------------------------------------
+       Extra helpers
+       ------------------------------------------------------------------ */
+    private static void displayWelcomeArt() {
+        String characterToRepeat = "\\";
+
+        String pizzaStore = "          ______________________________________________\n" +
+                "         /      _ _ - -                         __--    \\\n" +
+                "        /  _-               _ -  _ -    _-               \\\n" +
+                "       /__________________________________________________\\\n" +
+                "        |       __________________________________       |\n" +
+                "        |      /" + characterToRepeat.repeat(35) + "      |\n" +
+                "        |     /" + characterToRepeat.repeat(37) + "     |\n" +
+                "        |  __ UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU __  |\n" +
+                "        | |%%| |  ___________________   _________ | |%%| |\n" +
+                "        | |%%| | | P | I | Z | Z | A |  || _ _ || | |%%| |\n" +
+                "        | |%%| | |   |   |   |   |   |  |||_|_||| | |%%| |\n" +
+                "        | |%%| | |___|___|___|___|___|  |||_|_||| | |%%| |\n" +
+                "        | ==== | |%%%|%%%|%%%|%%%|%%%|  ||     || | ==== |\n" +
+                "        |      | |%%%|%%%|%%%|%%%|%%%|  ||o    || |      |\n" +
+                "        |______| =====================  ||     || |______|\n" +
+                "       ________|________________________||_____||_|________\n" +
+                "       _________________________________/_______\\__________\n";
+        System.out.println(pizzaStore);
+    }
+
     private static void tableHeader() {
         System.out.println();
         System.out.println("Date        Time       Description                     Vendor                    Amount");
         System.out.println("---------------------------------------------------------------------------------------");
+    }
+
+    private static void createTransactionsFile() {
+        try {
+            BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME));
+            Transaction firstTransaction = new Transaction(
+                    LocalDate.parse("2025-10-10", DATE_FMT),
+                    LocalTime.parse("11:35:56", TIME_FMT),
+                    "Starting Balance",
+                    "Myself",
+                    5.00);
+
+            myWriter.write(String.format("%s|%s|%s|%s|%s\n",
+                    firstTransaction.getDate(),
+                    firstTransaction.getTime(),
+                    firstTransaction.getDescription(),
+                    firstTransaction.getVendor(),
+                    firstTransaction.getAmount()));
+
+            myWriter.close();
+        } catch (Exception exception) {
+            System.out.println("Error creating File");
+            System.out.println(exception.getMessage());
+        }
     }
 
     /* ------------------------------------------------------------------
