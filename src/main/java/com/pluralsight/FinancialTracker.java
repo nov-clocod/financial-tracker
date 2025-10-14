@@ -136,7 +136,8 @@ public class FinancialTracker {
 
             transactions.sort(Collections.reverseOrder());
 
-            System.out.println("Sale recorded\n");
+            System.out.println();
+            System.out.println("Sale recorded!\n");
             myWriter.close();
 
         } catch (Exception exception) {
@@ -182,7 +183,8 @@ public class FinancialTracker {
 
             transactions.sort(Collections.reverseOrder());
 
-            System.out.println("Payment recorded\n");
+            System.out.println();
+            System.out.println("Payment recorded! \n");
             myWriter.close();
 
         } catch (Exception exception) {
