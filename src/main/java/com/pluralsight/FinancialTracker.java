@@ -200,6 +200,8 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
+            //Java can't process an emoji because it is larger than 16bit so they use a surrogate
+            //pair to make it happen in the background
             System.out.println("==============[ Ledger Menu \uD83C\uDF55 ]===============");
             System.out.println("A) All");
             System.out.println("S) Sales");
@@ -502,6 +504,8 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Extra helpers
        ------------------------------------------------------------------ */
+    //Since I added an extra feature, I want to also customize the welcoming message while not taking much space
+    //in the main code
     private static void displayWelcomeMessage() {
         double totalBalance = 0;
 
@@ -518,6 +522,7 @@ public class FinancialTracker {
         System.out.printf("Current Balance: $%.2f\n\n", totalBalance);
     }
 
+    //This is an extra feature that I didn't want to directly add into the main method that takes up a lot of space
     private static void displayWelcomeArt() {
         String characterToRepeat = "\\";
 
@@ -541,12 +546,14 @@ public class FinancialTracker {
         System.out.println(pizzaStore);
     }
 
+    //The table header is used many times through the code, so instead of printing out this I made a method of it
     private static void tableHeader() {
         System.out.println();
         System.out.println("Date        Time       Description                     Vendor                    Amount");
         System.out.println("---------------------------------------------------------------------------------------");
     }
 
+    //Created this as a separate method to reduce the amount of code in loadTransactions for better readability
     private static void createTransactionsFile() {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME));

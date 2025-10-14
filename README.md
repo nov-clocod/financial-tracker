@@ -70,6 +70,7 @@ List resources such as tutorials, articles, or documentation that helped you dur
 - [Getting Specific Dates](https://stackoverflow.com/questions/22223786/get-first-and-last-day-of-month-using-threeten-localdate
   )
 - [Date Comparison](https://stackoverflow.com/questions/5927109/sort-objects-in-arraylist-by-date)
+- [ASCII Art](https://ascii.co.uk/)
 
 ## Team Members
 
