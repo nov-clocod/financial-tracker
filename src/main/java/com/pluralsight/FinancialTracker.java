@@ -27,12 +27,12 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
         loadTransactions(FILE_NAME);
-        transactions.sort(Collections.reverseOrder());
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
+            transactions.sort(Collections.reverseOrder());
             displayWelcomeArt();
             displayWelcomeMessage();
             System.out.println("S) Add a Sale");
@@ -64,10 +64,10 @@ public class FinancialTracker {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(fileName));
-            File file = new File(fileName);
+            File transactionsFile = new File(fileName);
 
-            if (!file.exists()) {
-                createTransactionsFile();
+            if (transactionsFile.createNewFile()) {
+                System.out.println("Fresh file created!");
             } else {
                 String line;
 
@@ -104,8 +104,7 @@ public class FinancialTracker {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
-            String stringInputDepositDateTime = scanner.nextLine().trim();
-            String formattedDepositDateTime = String.valueOf(LocalDateTime.parse(stringInputDepositDateTime, DATETIME_FMT));
+            LocalDateTime userInputDepositDateTime = LocalDateTime.parse(scanner.nextLine().trim(), DATETIME_FMT);
 
             System.out.println("Enter the description of the order item: ");
             String userDepositDescription = scanner.nextLine().trim();
@@ -117,9 +116,8 @@ public class FinancialTracker {
             String stringInputDepositAmount = scanner.nextLine().trim();
             double userDepositAmount = parseDouble(stringInputDepositAmount);
 
-            int spacePosition = formattedDepositDateTime.indexOf("T");
-            LocalDate userDepositDate = LocalDate.parse((formattedDepositDateTime.substring(0, spacePosition)));
-            LocalTime userDepositTime = LocalTime.parse((formattedDepositDateTime.substring(spacePosition + 1)));
+            LocalDate userDepositDate = userInputDepositDateTime.toLocalDate();
+            LocalTime userDepositTime = userInputDepositDateTime.toLocalTime();
 
             myWriter.write(userDepositDate + "|" +
                     userDepositTime + "|" +
@@ -133,8 +131,6 @@ public class FinancialTracker {
                     userDepositDescription,
                     userDepositVendor,
                     userDepositAmount));
-
-            transactions.sort(Collections.reverseOrder());
 
             System.out.println();
             System.out.println("Sale recorded!\n");
@@ -152,8 +148,7 @@ public class FinancialTracker {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
-            String stringInputPaymentDateTime = scanner.nextLine().trim();
-            String formattedPaymentDateTime = String.valueOf(LocalDateTime.parse(stringInputPaymentDateTime, DATETIME_FMT));
+            LocalDateTime userInputPaymentDateTime = LocalDateTime.parse(scanner.nextLine().trim(), DATETIME_FMT);
 
             System.out.println("Enter the description of the payment to vendor: ");
             String userPaymentDescription = scanner.nextLine().trim();
@@ -165,9 +160,8 @@ public class FinancialTracker {
             String stringInputDepositAmount = scanner.nextLine().trim();
             double userPaymentAmount = parseDouble("-" + stringInputDepositAmount);
 
-            int spacePosition = formattedPaymentDateTime.indexOf("T");
-            LocalDate userPaymentDate = LocalDate.parse((formattedPaymentDateTime.substring(0, spacePosition)));
-            LocalTime userPaymentTime = LocalTime.parse((formattedPaymentDateTime.substring(spacePosition + 1)));
+            LocalDate userPaymentDate = userInputPaymentDateTime.toLocalDate();
+            LocalTime userPaymentTime = userInputPaymentDateTime.toLocalTime();
 
             myWriter.write(userPaymentDate + "|" +
                     userPaymentTime + "|" +
@@ -180,8 +174,6 @@ public class FinancialTracker {
                     userPaymentDescription,
                     userPaymentVendor,
                     userPaymentAmount));
-
-            transactions.sort(Collections.reverseOrder());
 
             System.out.println();
             System.out.println("Payment recorded! \n");
@@ -229,8 +221,6 @@ public class FinancialTracker {
     private static void displayLedger() {
 
         try {
-            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-
             tableHeader();
             boolean found = false;
 
@@ -246,8 +236,6 @@ public class FinancialTracker {
                 System.out.println();
             }
 
-            myReader.close();
-
         } catch (Exception exception) {
             System.out.println("Uh-oh, we can't find dough file");
             System.out.println(exception.getMessage() + "\n");
@@ -257,8 +245,6 @@ public class FinancialTracker {
     private static void displaySales() {
 
         try {
-            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-
             tableHeader();
             boolean found = false;
 
@@ -276,8 +262,6 @@ public class FinancialTracker {
                 System.out.println("No sales history found! Go make your first sale!\n");
             }
 
-            myReader.close();
-
         } catch (Exception exception) {
             System.out.println("Uh-oh, we can't find dough file");
             System.out.println(exception.getMessage() + "\n");
@@ -288,8 +272,6 @@ public class FinancialTracker {
     private static void displayPayments() {
 
         try {
-            BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
-
             tableHeader();
             boolean found = false;
 
@@ -306,8 +288,6 @@ public class FinancialTracker {
             if (!found) {
                 System.out.println("No payment history found! Woohoo!, no vendor payments!\n");
             }
-
-            myReader.close();
 
         } catch (Exception exception) {
             System.out.println("Uh-oh, we can't find dough file");
@@ -552,32 +532,6 @@ public class FinancialTracker {
         System.out.println("Date        Time       Description                     Vendor                    Amount");
         System.out.println("---------------------------------------------------------------------------------------");
     }
-
-    //Created this as a separate method to reduce the amount of code in loadTransactions for better readability
-    private static void createTransactionsFile() {
-        try {
-            BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME));
-            Transaction firstTransaction = new Transaction(
-                    LocalDate.parse("2025-10-10", DATE_FMT),
-                    LocalTime.parse("11:35:56", TIME_FMT),
-                    "Starting Balance",
-                    "Myself",
-                    5.00);
-
-            myWriter.write(String.format("%s|%s|%s|%s|%s\n",
-                    firstTransaction.getDate(),
-                    firstTransaction.getTime(),
-                    firstTransaction.getDescription(),
-                    firstTransaction.getVendor(),
-                    firstTransaction.getAmount()));
-
-            myWriter.close();
-        } catch (Exception exception) {
-            System.out.println("Uh-oh, the oven is not baking to the file");
-            System.out.println(exception.getMessage());
-        }
-    }
-
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
