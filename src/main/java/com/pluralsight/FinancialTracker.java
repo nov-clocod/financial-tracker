@@ -29,33 +29,30 @@ public class FinancialTracker {
         loadTransactions(FILE_NAME);
         transactions.sort(Collections.reverseOrder());
 
-        displayWelcomeArt();
-
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
-            System.out.println();
-            System.out.println("Welcome to TransactionApp");
-            System.out.println("-------------------------");
-            System.out.println("D) Add Deposit");
+            displayWelcomeArt();
+            displayWelcomeMessage();
+            System.out.println("S) Add a Sale");
             System.out.println("P) Make Payment (Debit)");
             System.out.println("L) Ledger");
             System.out.println("X) Exit");
-
-            System.out.println("Choose an option:");
+            System.out.println("==============================================");
+            System.out.println("Choose an option to get the dough started:");
             String input = scanner.nextLine().trim();
             System.out.println();
 
             switch (input.toUpperCase()) {
-                case "D" -> addDeposit(scanner);
+                case "S" -> addSale(scanner);
                 case "P" -> addPayment(scanner);
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> {
                     running = false;
-                    System.out.println("“Thanks for using our app! We hope to see you again soon.");
+                    System.out.println("Thanks for using our app! We hope to see you pizza happy again!.");
                 }
-                default -> System.out.println("Invalid option\n");
+                default -> System.out.println("That's not very doughy, try again\n");
             }
         }
         scanner.close();
@@ -94,7 +91,7 @@ public class FinancialTracker {
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Oops, something went wrong");
+            System.out.println("Oops, something went wrong. Contact the Piz-xperts");
             System.out.println(exception.getMessage());
         }
 
@@ -103,20 +100,20 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Add new transactions
        ------------------------------------------------------------------ */
-    private static void addDeposit(Scanner scanner) {
+    private static void addSale(Scanner scanner) {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
             System.out.println("Enter the date with time in this format (yyyy-MM-dd HH:mm:s): ");
             String stringInputDepositDateTime = scanner.nextLine().trim();
             String formattedDepositDateTime = String.valueOf(LocalDateTime.parse(stringInputDepositDateTime, DATETIME_FMT));
 
-            System.out.println("Enter the description of the deposit: ");
+            System.out.println("Enter the description of the order item: ");
             String userDepositDescription = scanner.nextLine().trim();
 
-            System.out.println("Enter the payer/institution's name: ");
+            System.out.println("Enter the customer's name: ");
             String userDepositVendor = scanner.nextLine().trim();
 
-            System.out.println("Enter the deposit amount (positive number): ");
+            System.out.println("Enter the total price (positive number): ");
             String stringInputDepositAmount = scanner.nextLine().trim();
             double userDepositAmount = parseDouble(stringInputDepositAmount);
 
@@ -139,11 +136,11 @@ public class FinancialTracker {
 
             transactions.sort(Collections.reverseOrder());
 
-            System.out.println("Deposit recorded\n");
+            System.out.println("Sale recorded\n");
             myWriter.close();
 
         } catch (Exception exception) {
-            System.out.println("Error writing to the file");
+            System.out.println("Uh-oh, the oven is not baking to the file");
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -157,13 +154,13 @@ public class FinancialTracker {
             String stringInputPaymentDateTime = scanner.nextLine().trim();
             String formattedPaymentDateTime = String.valueOf(LocalDateTime.parse(stringInputPaymentDateTime, DATETIME_FMT));
 
-            System.out.println("Enter the description of the payment: ");
+            System.out.println("Enter the description of the payment to vendor: ");
             String userPaymentDescription = scanner.nextLine().trim();
 
-            System.out.println("Enter the payee/institution's name: ");
+            System.out.println("Enter the vendor's name: ");
             String userPaymentVendor = scanner.nextLine().trim();
 
-            System.out.println("Enter the payment amount (positive number): ");
+            System.out.println("Enter the total price (positive number): ");
             String stringInputDepositAmount = scanner.nextLine().trim();
             double userPaymentAmount = parseDouble("-" + stringInputDepositAmount);
 
@@ -189,7 +186,7 @@ public class FinancialTracker {
             myWriter.close();
 
         } catch (Exception exception) {
-            System.out.println("Error writing to the file");
+            System.out.println("Uh-oh, the oven is not baking to the file");
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -201,23 +198,23 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
-            System.out.println("Ledger Menu");
-            System.out.println("-----------");
+            System.out.println("==============[ Ledger Menu \uD83C\uDF55 ]===============");
             System.out.println("A) All");
-            System.out.println("D) Deposits");
+            System.out.println("S) Sales");
             System.out.println("P) Payments");
             System.out.println("R) Reports");
             System.out.println("H) Home");
-            System.out.println("Choose an option:");
+            System.out.println("===============================================");
+            System.out.println("Which slice would you like to check today?");
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
                 case "A" -> displayLedger();
-                case "D" -> displayDeposits();
+                case "S" -> displaySales();
                 case "P" -> displayPayments();
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
-                default -> System.out.println("Invalid option\n");
+                default -> System.out.println("That slice isn't ready yet, choose another\n");
             }
         }
     }
@@ -248,12 +245,12 @@ public class FinancialTracker {
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Error reading the file");
+            System.out.println("Uh-oh, we can't find dough file");
             System.out.println(exception.getMessage() + "\n");
         }
     }
 
-    private static void displayDeposits() {
+    private static void displaySales() {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(FILE_NAME));
@@ -272,13 +269,13 @@ public class FinancialTracker {
             System.out.println();
 
             if (!found) {
-                System.out.println("No deposit history found! Go make your first deposit!\n");
+                System.out.println("No sales history found! Go make your first sale!\n");
             }
 
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Error writing to the file");
+            System.out.println("Uh-oh, we can't find dough file");
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -303,13 +300,13 @@ public class FinancialTracker {
             System.out.println();
 
             if (!found) {
-                System.out.println("No payment history found! Go make your first payment!\n");
+                System.out.println("No payment history found! Woohoo!, no vendor payments!\n");
             }
 
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Error writing to the file");
+            System.out.println("Uh-oh, we can't find dough file");
             System.out.println(exception.getMessage() + "\n");
         }
     }
@@ -321,8 +318,7 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println();
-            System.out.println("Reports");
-            System.out.println("-------");
+            System.out.println("==============[ Reports Oven \uD83D\uDD25 ]===============");
             System.out.println("1) Month To Date");
             System.out.println("2) Previous Month");
             System.out.println("3) Year To Date");
@@ -330,7 +326,8 @@ public class FinancialTracker {
             System.out.println("5) Search by Vendor");
             System.out.println("6) Custom Search");
             System.out.println("0) Back");
-            System.out.println("Choose an option:");
+            System.out.println("===============================================");
+            System.out.println("Which pizza report would you like to bake today?");
             String input = scanner.nextLine().trim();
 
             switch (input) {
@@ -341,7 +338,7 @@ public class FinancialTracker {
                 case "5" -> vendorSearch(scanner);
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
-                default -> System.out.println("Invalid option\n");
+                default -> System.out.println("That report’s still rising, try a different one\n");
             }
         }
     }
@@ -495,7 +492,7 @@ public class FinancialTracker {
 
             }
         } catch (Exception exception) {
-            System.out.println("Error occurred when checking your dates, please enter valid dates in the format provided");
+            System.out.println("Error occurred when checking your dates, are you sure the dates are in human language?");
             System.out.println(exception.getMessage());
         }
     }
@@ -503,26 +500,42 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Extra helpers
        ------------------------------------------------------------------ */
+    private static void displayWelcomeMessage() {
+        double totalBalance = 0;
+
+        for (Transaction transaction : transactions) {
+            totalBalance += transaction.getAmount();
+        }
+
+        System.out.println();
+        System.out.println("        \uD83C\uDF55  Welcome to PizzaLedger  \uD83C\uDF55");
+        System.out.println("==============================================");
+        System.out.println("Manage your pizza shop sales and purchases");
+        System.out.println("with reports where every slice counts!\n");
+        System.out.println("Today's Date: " + LocalDate.now());
+        System.out.printf("Current Balance: $%.2f\n\n", totalBalance);
+    }
+
     private static void displayWelcomeArt() {
         String characterToRepeat = "\\";
 
-        String pizzaStore = "          ______________________________________________\n" +
-                "         /      _ _ - -                         __--    \\\n" +
-                "        /  _-               _ -  _ -    _-               \\\n" +
-                "       /__________________________________________________\\\n" +
-                "        |       __________________________________       |\n" +
-                "        |      /" + characterToRepeat.repeat(35) + "      |\n" +
-                "        |     /" + characterToRepeat.repeat(37) + "     |\n" +
-                "        |  __ UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU __  |\n" +
-                "        | |%%| |  ___________________   _________ | |%%| |\n" +
-                "        | |%%| | | P | I | Z | Z | A |  || _ _ || | |%%| |\n" +
-                "        | |%%| | |   |   |   |   |   |  |||_|_||| | |%%| |\n" +
-                "        | |%%| | |___|___|___|___|___|  |||_|_||| | |%%| |\n" +
-                "        | ==== | |%%%|%%%|%%%|%%%|%%%|  ||     || | ==== |\n" +
-                "        |      | |%%%|%%%|%%%|%%%|%%%|  ||o    || |      |\n" +
-                "        |______| =====================  ||     || |______|\n" +
-                "       ________|________________________||_____||_|________\n" +
-                "       _________________________________/_______\\__________\n";
+        String pizzaStore = "   ______________________________________________\n" +
+                "  /      _ _ - -                         __--    \\\n" +
+                " /  _-               _ -  _ -    _-               \\\n" +
+                "/__________________________________________________\\\n" +
+                " |       __________________________________       |\n" +
+                " |      /" + characterToRepeat.repeat(35) + "      |\n" +
+                " |     /" + characterToRepeat.repeat(37) + "     |\n" +
+                " |  __ UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU __  |\n" +
+                " | |%%| |  ___________________   _________ | |%%| |\n" +
+                " | |%%| | | P | I | Z | Z | A |  || _ _ || | |%%| |\n" +
+                " | |%%| | |   |   |   |   |   |  |||_|_||| | |%%| |\n" +
+                " | |%%| | |___|___|___|___|___|  |||_|_||| | |%%| |\n" +
+                " | ==== | |%%%|%%%|%%%|%%%|%%%|  ||     || | ==== |\n" +
+                " |      | |%%%|%%%|%%%|%%%|%%%|  ||o    || |      |\n" +
+                " |______| =====================  ||     || |______|\n" +
+                "________|________________________||_____||_|________\n" +
+                "_________________________________/_______\\__________";
         System.out.println(pizzaStore);
     }
 
@@ -551,7 +564,7 @@ public class FinancialTracker {
 
             myWriter.close();
         } catch (Exception exception) {
-            System.out.println("Error creating File");
+            System.out.println("Uh-oh, the oven is not baking to the file");
             System.out.println(exception.getMessage());
         }
     }
