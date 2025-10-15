@@ -369,8 +369,7 @@ public class FinancialTracker {
         boolean found = false;
 
         for (Transaction transaction : transactions) {
-            if ((transaction.getDate().isAfter(start) || transaction.getDate().isEqual(start)) &&
-                    (transaction.getDate().isBefore(end)  || transaction.getDate().isEqual(end))) {
+            if (!transaction.getDate().isAfter(end) && !transaction.getDate().isBefore(start)) {
                 System.out.println(transaction);
                 found = true;
             }
