@@ -45,7 +45,7 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction anotherDate) {
-        int compareDate = this.date.compareTo(anotherDate.date);
-        return (compareDate != 0) ? compareDate : this.time.compareTo(anotherDate.time);
+        int compareDate = anotherDate.date.compareTo(this.date);
+        return (compareDate != 0) ? compareDate : anotherDate.time.compareTo(this.time);
     }
 }
