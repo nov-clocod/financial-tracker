@@ -2,6 +2,7 @@ package com.pluralsight;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+//Add the functionality of the Transaction object to be able to compare to another Transaction object
 public class Transaction implements Comparable<Transaction> {
     private LocalDate date;
     private LocalTime time;
@@ -43,6 +44,8 @@ public class Transaction implements Comparable<Transaction> {
         this.date, this.time, this.description, this.vendor, this.amount);
     }
 
+    //The method that compares two dates in and sorts the transactions in descending order
+    //If the dates are the same, it is then compared with the time in descending order
     @Override
     public int compareTo(Transaction anotherDate) {
         int compareDate = anotherDate.date.compareTo(this.date);

@@ -60,12 +60,20 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        File I/O
        ------------------------------------------------------------------ */
+    /**
+     * Load transactions from FILE_NAME.
+     * If the file doesn’t exist, create an empty one so that future writes succeed.
+     * Each line in the file looks like: date|time|description|vendor|amount
+     * @param fileName the name of the transactions file to load
+     */
     public static void loadTransactions(String fileName) {
 
         try {
             BufferedReader myReader = new BufferedReader(new FileReader(fileName));
             File transactionsFile = new File(fileName);
 
+            //Creates new file if the file doesn't exist
+            //Reads the transactions from the file if file exists
             if (transactionsFile.createNewFile()) {
                 System.out.println("Fresh file created!");
             } else {
@@ -96,10 +104,15 @@ public class FinancialTracker {
         }
 
     }
-
     /* ------------------------------------------------------------------
        Add new transactions
        ------------------------------------------------------------------ */
+    /**
+     * Prompt for ONE date+time string in the format
+     * "yyyy-MM-dd HH:mm:ss", plus description, vendor, amount.
+     * Validate that the amount entered is positive.
+     * Store the amount as-is (positive) and append to the file.
+     */
     private static void addDeposit(Scanner scanner) {
         try {
             BufferedWriter myWriter = new BufferedWriter(new FileWriter(FILE_NAME, true));
@@ -143,6 +156,11 @@ public class FinancialTracker {
 
     }
 
+    /**
+     * Same prompts as addDeposit.
+     * Amount must be entered as a positive number,
+     * then converted to a negative amount before storing.
+     */
     private static void addPayment(Scanner scanner) {
 
         try {
@@ -192,8 +210,6 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
-            //Java can't process an emoji because it is larger than 16bit so they use a surrogate
-            //pair to make it happen in the background
             System.out.println("==============[ Ledger Menu \uD83C\uDF55 ]===============");
             System.out.println("A) All");
             System.out.println("D) Deposits");
@@ -325,13 +341,23 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * Prompts the user to enter a vendor name and filters transactions
+     * and displays only transactions matching to the vendor
+     * @param scanner captures the user input from the user
+     */
     private static void vendorSearch(Scanner scanner) {
         System.out.println("Enter the vendor's name: ");
-        String inputVendor = scanner.nextLine().trim().toLowerCase();
+        String inputVendor = scanner.nextLine().trim();
 
         filterTransactionsByVendor(inputVendor);
     }
 
+    /**
+     * Generates a report of all transactions of the previous year
+     * Determines the first day and last day of the previous year
+     * Each date is then passed into the helper method for date filtering
+     */
     private static void previousYearReport() {
         LocalDate firstDayOfLastYear = LocalDate.now().minusYears(1).withDayOfYear(1);
         LocalDate lastDayOfLastYear = LocalDate.now().withDayOfYear(1).minusDays(1);
@@ -339,6 +365,11 @@ public class FinancialTracker {
         filterTransactionsByDate(firstDayOfLastYear, lastDayOfLastYear);
     }
 
+    /**
+     * Generates a report of all transactions from the start of the current year to today
+     * Determines the first day of the current year and current date
+     * Each date is then passed into the helper method for date filtering
+     */
     private static void yearToDateReport() {
         LocalDate firstDayOfThisYear = LocalDate.now().withDayOfYear(1);
         LocalDate today = LocalDate.now();
@@ -346,6 +377,11 @@ public class FinancialTracker {
         filterTransactionsByDate(firstDayOfThisYear, today);
     }
 
+    /**
+     * Generates a report of all transactions of the previous month.
+     * Determines the first day and last day of the previous month.
+     * Each date is then passed into the helper method for date filtering
+     */
     private static void previousMonthReport() {
         LocalDate firstDayOfLastMonth = LocalDate.now().minusMonths(1).withDayOfMonth(1);
         LocalDate lastDayOfLastMonth = LocalDate.now().withDayOfMonth(1).minusDays(1);
@@ -353,6 +389,11 @@ public class FinancialTracker {
         filterTransactionsByDate(firstDayOfLastMonth, lastDayOfLastMonth);
     }
 
+    /**
+     * Generates a report of all transactions from the first day of the current month to today
+     * Determines the first day of the current month and current date
+     * Each date is then passed into the helper method for date filtering
+     */
     private static void monthToDateReport() {
         LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
         LocalDate today = LocalDate.now();
@@ -363,6 +404,15 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
+
+    /**
+     * Filters and displays transactions within a specific date range.
+     * Compares each transaction date to the provided parameter dates
+     * @param start receives a LocalDate variable in the date format yyyy-MM-dd
+     *              to start the range from
+     * @param end receives a LocalDate variable in the date format yyyy-MM-dd
+     *            to the end the range
+     */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
 
         tableHeader();
@@ -380,6 +430,10 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * Filters and displays transaction based on the parameter passed into the method
+     * @param vendor receives as a String to pass into the condition to filter
+     */
     private static void filterTransactionsByVendor(String vendor) {
 
         tableHeader();
@@ -397,8 +451,18 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * Prompts the user for input on dates in the format yyyy-MM-dd, description,
+     * vendor, and the amount of the transaction
+     * Performs a search in transactions ArrayList based on user inputs.
+     * For each transaction, it is defaulted to print out unless any conditions
+     * matches, and it will filter out the transaction.
+     */
     private static void customSearch(Scanner scanner) {
 
+        /*Each search criteria is optional, if none is entered all transactions
+        will be printed. If there are criteria, only those transactions with
+        the criteria will be printed*/
         try {
             System.out.println();
             System.out.println("Enter start date (yyyy-MM-dd) blank=none: ");
@@ -413,7 +477,7 @@ public class FinancialTracker {
             System.out.println("Enter the vendor/payee of the transaction blank=none: ");
             String searchVendor = scanner.nextLine().trim();
 
-            System.out.println("Enter the payment amount of the transaction blank=none: ");
+            System.out.println("Enter the amount of the transaction blank=none: ");
             String amountInput = scanner.nextLine().trim();
             Double searchAmount = parseDouble(amountInput);
 
@@ -425,8 +489,7 @@ public class FinancialTracker {
                     searchAmount != null);
 
             tableHeader();
-            // Performs like a filter action. For each transaction, it is defaulted to print out,
-            // if any conditions matches it will filter out the transaction.
+
             for (Transaction transaction : transactions) {
                 boolean isMatch = true;
 
@@ -475,8 +538,10 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Extra helpers
        ------------------------------------------------------------------ */
-    //Since I added an extra feature, I want to also customize the welcoming message while not taking much space
-    //in the main code
+
+    /**
+     * Displays welcome message, today's date, and account balance
+     */
     private static void displayWelcomeMessage() {
         double totalBalance = 0;
 
@@ -493,7 +558,9 @@ public class FinancialTracker {
         System.out.printf("Current Balance: $%.2f\n\n", totalBalance);
     }
 
-    //This is an extra feature that I didn't want to directly add into the main method that takes up a lot of space
+    /**
+     * Displays welcome art
+     */
     private static void displayWelcomeArt() {
         String characterToRepeat = "\\";
 
@@ -517,7 +584,9 @@ public class FinancialTracker {
         System.out.println(pizzaStore);
     }
 
-    //The table header is used many times through the code, so instead of printing out this I made a method of it
+    /**
+     * Displays the table header for transactions/reports
+     */
     private static void tableHeader() {
         System.out.println();
         System.out.println("Date        Time       Description                     Vendor                    Amount");
@@ -526,6 +595,13 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
+
+    /**
+     * Parses a string in the yyyy-MM-dd date format to return null or
+     * as a LocalDate object
+     * @param s the string to parse
+     * @return a LocalDate object or null if the string is empty
+     */
     private static LocalDate parseDate(String s) {
 
         if (s.isEmpty()) {
@@ -535,6 +611,11 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * Parses a string into a Double value
+     * @param s the string to parse
+     * @return the string as a Double value or null if the string is empty
+     */
     private static Double parseDouble(String s) {
 
         if (s == null || s.isEmpty()) {
