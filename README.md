@@ -77,6 +77,4 @@ List resources such as tutorials, articles, or documentation that helped you dur
 
 ## Thanks
 
-Express gratitude towards those who provided help, guidance, or resources:
-
 - Thank you to Raymond Maroun for providing valuable feedback and guidance as I complete this project.
