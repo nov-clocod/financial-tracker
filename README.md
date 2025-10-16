@@ -2,9 +2,8 @@
 
 ## Description of the Project
 
-Explain the main functionality and what problems it aims to solve.
-My project is a simple, organized CLI application for recording transactions that are deposits, out-going payments,
-and generate reports that are saved locally in a file.
+My project is a simple, adaptable, organized CLI application designed for small businesses to record transactions 
+that are deposits, out-going payments, and generate reports all saved locally in a file.
 
 ## User Stories
 
@@ -80,4 +79,4 @@ List resources such as tutorials, articles, or documentation that helped you dur
 
 Express gratitude towards those who provided help, guidance, or resources:
 
-- Thank you to Raymond Maroun for providing guidance as I complete this project.
+- Thank you to Raymond Maroun for providing valuable feedback and guidance as I complete this project.

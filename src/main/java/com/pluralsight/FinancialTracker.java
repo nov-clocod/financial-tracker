@@ -12,6 +12,18 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Shared data and formatters
        ------------------------------------------------------------------ */
+    private static final String RESET = "\u001B[0m";
+    private static final String BOLD = "\033[1m";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String WHITE = "\u001B[97m";
+    private static final String GRAY = "\u001B[90m";
+    private static final String ORANGE = "\u001B[38;5;208m";
+    private static final String BOLD_YELLOW = "\u001B[1m\u001B[93m";
+    private static final String CYAN = "\u001B[36m";
+    private static final String BLUE = "\u001B[34m";
+    private static final String PURPLE = "\u001B[35m";
+
     private static final ArrayList<Transaction> transactions = new ArrayList<>();
     private static final String FILE_NAME = "transactions.csv";
 
@@ -35,11 +47,11 @@ public class FinancialTracker {
             Collections.sort(transactions);
             displayWelcomeArt();
             displayWelcomeMessage();
-            System.out.println("D) Add Deposit");
-            System.out.println("P) Make Payment (Debit)");
-            System.out.println("L) Ledger");
+            System.out.println(GREEN + "D) Add Deposit");
+            System.out.println(RED + "P) Make Payment (Debit)");
+            System.out.println(ORANGE + "L) Ledger" + RESET);
             System.out.println("X) Exit");
-            System.out.println("==============================================");
+            System.out.println(BOLD_YELLOW + "==============================================" + RESET);
             System.out.println("Choose an option to get the dough started:");
             String input = scanner.nextLine().trim();
             System.out.println();
@@ -50,7 +62,7 @@ public class FinancialTracker {
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> {
                     running = false;
-                    System.out.println("Thanks for using our app! We hope to see you pizza happy again!.");
+                    System.out.println(ORANGE + "Thanks for using our app! We hope to see you pizza happy again!.");
                 }
                 default -> System.out.println("That's not very doughy, try again\n");
             }
@@ -75,7 +87,7 @@ public class FinancialTracker {
             //Creates new file if the file doesn't exist
             //Reads the transactions from the file if file exists
             if (transactionsFile.createNewFile()) {
-                System.out.println("Fresh file created!");
+                System.out.println(GREEN + "Fresh file created!" + RESET);
             } else {
                 String line;
 
@@ -99,7 +111,7 @@ public class FinancialTracker {
             myReader.close();
 
         } catch (Exception exception) {
-            System.out.println("Oops, something went wrong. Contact the Piz-xperts");
+            System.out.println(RED + "Oops, something went wrong. Contact the Piz-xperts" + RESET);
             System.out.println(exception.getMessage());
         }
 
@@ -146,11 +158,11 @@ public class FinancialTracker {
                     userDepositAmount));
 
             System.out.println();
-            System.out.println("Sale recorded!\n");
+            System.out.println(GREEN + "Sale recorded!\n" + RESET);
             myWriter.close();
 
         } catch (Exception exception) {
-            System.out.println("Uh-oh, the oven is not baking to the file");
+            System.out.println(RED + "Uh-oh, the oven is not baking to the file" + RESET);
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -194,11 +206,11 @@ public class FinancialTracker {
                     userPaymentAmount));
 
             System.out.println();
-            System.out.println("Payment recorded! \n");
+            System.out.println(RED + "Payment recorded! \n" + RESET);
             myWriter.close();
 
         } catch (Exception exception) {
-            System.out.println("Uh-oh, the oven is not baking to the file");
+            System.out.println(RED + "Uh-oh, the oven is not baking to the file" + RESET);
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -210,13 +222,13 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
-            System.out.println("==============[ Ledger Menu \uD83C\uDF55 ]===============");
-            System.out.println("A) All");
-            System.out.println("D) Deposits");
-            System.out.println("P) Payments");
-            System.out.println("R) Reports");
+            System.out.println(BOLD_YELLOW + "==============" + ORANGE + "[ " + BOLD + ORANGE + "Ledger Menu \uD83C\uDF55 ]" + BOLD_YELLOW + "===============");
+            System.out.println(BLUE + "A) All");
+            System.out.println(GREEN + "D) Deposits");
+            System.out.println(RED + "P) Payments");
+            System.out.println(PURPLE + "R) Reports" + RESET);
             System.out.println("H) Home");
-            System.out.println("===============================================");
+            System.out.println(BOLD_YELLOW + "===============================================" + RESET);
             System.out.println("Which slice would you like to check today?");
             String input = scanner.nextLine().trim();
 
@@ -225,8 +237,11 @@ public class FinancialTracker {
                 case "D" -> displayDeposits();
                 case "P" -> displayPayments();
                 case "R" -> reportsMenu(scanner);
-                case "H" -> running = false;
-                default -> System.out.println("That slice isn't ready yet, choose another\n");
+                case "H" -> {
+                    running = false;
+                    System.out.println();
+                }
+                default -> System.out.println(ORANGE + "That slice isn't ready yet, choose another\n" + RESET);
             }
         }
     }
@@ -241,19 +256,23 @@ public class FinancialTracker {
             boolean found = false;
 
             for (Transaction transaction : transactions) {
-                System.out.println(transaction);
+                if (transaction.getAmount() > 0 ) {
+                    System.out.println(GREEN + transaction + RESET);
+                } else {
+                    System.out.println(RED + transaction + RESET);
+                }
                 found = true;
             }
 
 
             if (!found) {
-                System.out.println("No transaction history found! Go make your first deposit or payment!\n");
+                System.out.println(WHITE + "No transaction history found! Go make your first deposit or payment!\n" + RESET);
             } else {
                 System.out.println();
             }
 
         } catch (Exception exception) {
-            System.out.println("Uh-oh, we can't find dough file");
+            System.out.println(RED + "Uh-oh, we can't find dough file" + RESET);
             System.out.println(exception.getMessage() + "\n");
         }
     }
@@ -266,7 +285,7 @@ public class FinancialTracker {
 
             for (Transaction transaction : transactions) {
                 if (transaction.getAmount() > 0) {
-                    System.out.println(transaction);
+                    System.out.println(GREEN + transaction);
                     found =true;
                 }
             }
@@ -274,11 +293,11 @@ public class FinancialTracker {
             System.out.println();
 
             if (!found) {
-                System.out.println("No sales history found! Go make your first sale!\n");
+                System.out.println(WHITE + "No sales history found! Go make your first sale!\n" + RESET);
             }
 
         } catch (Exception exception) {
-            System.out.println("Uh-oh, we can't find dough file");
+            System.out.println(RED + "Uh-oh, we can't find dough file" + RESET);
             System.out.println(exception.getMessage() + "\n");
         }
 
@@ -292,7 +311,7 @@ public class FinancialTracker {
 
             for (Transaction transaction : transactions) {
                 if (transaction.getAmount() < 0) {
-                    System.out.println(transaction);
+                    System.out.println(RED + transaction + RESET);
                     found = true;
                 }
             }
@@ -300,11 +319,11 @@ public class FinancialTracker {
             System.out.println();
 
             if (!found) {
-                System.out.println("No payment history found! Woohoo!, no vendor payments!\n");
+                System.out.println(WHITE + "No payment history found! Woohoo!, no vendor payments!\n" + RESET);
             }
 
         } catch (Exception exception) {
-            System.out.println("Uh-oh, we can't find dough file");
+            System.out.println(RED + "Uh-oh, we can't find dough file" + RESET);
             System.out.println(exception.getMessage() + "\n");
         }
     }
@@ -316,15 +335,15 @@ public class FinancialTracker {
         boolean running = true;
         while (running) {
             System.out.println();
-            System.out.println("==============[ Reports Oven \uD83D\uDD25 ]===============");
-            System.out.println("1) Month To Date");
-            System.out.println("2) Previous Month");
-            System.out.println("3) Year To Date");
-            System.out.println("4) Previous Year");
-            System.out.println("5) Search by Vendor");
-            System.out.println("6) Custom Search");
+            System.out.println(BOLD_YELLOW + "==============" + PURPLE + "[ Reports Oven \uD83D\uDD25 ]" + BOLD_YELLOW + "===============");
+            System.out.println(RED + "1) Month To Date");
+            System.out.println(ORANGE + "2) Previous Month");
+            System.out.println(RED + "3) Year To Date");
+            System.out.println(ORANGE + "4) Previous Year");
+            System.out.println(RED + "5) Search by Vendor");
+            System.out.println(CYAN + "6) Custom Search" + RESET);
             System.out.println("0) Back");
-            System.out.println("===============================================");
+            System.out.println(BOLD_YELLOW + "===============================================" + RESET);
             System.out.println("Which pizza report would you like to bake today?");
             String input = scanner.nextLine().trim();
 
@@ -335,8 +354,11 @@ public class FinancialTracker {
                 case "4" -> previousYearReport();
                 case "5" -> vendorSearch(scanner);
                 case "6" -> customSearch(scanner);
-                case "0" -> running = false;
-                default -> System.out.println("That report’s still rising, try a different one\n");
+                case "0" -> {
+                    running = false;
+                    System.out.println();
+                }
+                default -> System.out.println(ORANGE + "That report’s still rising, try a different one\n" + RESET);
             }
         }
     }
@@ -417,16 +439,30 @@ public class FinancialTracker {
 
         tableHeader();
         boolean found = false;
+        double reportSum = 0;
 
         for (Transaction transaction : transactions) {
             if (!transaction.getDate().isAfter(end) && !transaction.getDate().isBefore(start)) {
-                System.out.println(transaction);
+                if (transaction.getAmount() > 0) {
+                    System.out.println(GREEN + transaction + RESET);
+                    reportSum += transaction.getAmount();
+                } else {
+                    System.out.println(RED + transaction + RESET);
+                    reportSum -= transaction.getAmount();
+                }
                 found = true;
             }
         }
 
-        if (!found) {
-            System.out.printf("No transaction found from %s to %s!\n", start, end);
+        if (found) {
+            if (reportSum > 0) {
+                System.out.println("---------------------------------------------------------------------------------------");
+                System.out.printf(BOLD + GREEN + "Total profit for this report: %.2f!\n" + RESET, reportSum);
+            } else {
+                System.out.printf(BOLD+ RED + "Total loss for this report: %.2f\n" + RESET, reportSum);
+            }
+        } else {
+            System.out.printf(WHITE + "No transaction found from %s to %s!\n" + RESET, start, end);
         }
     }
 
@@ -447,7 +483,7 @@ public class FinancialTracker {
         }
 
         if (!found) {
-            System.out.printf("No vendor found matching your search: %s!\n", vendor);
+            System.out.printf(WHITE + "No vendor found matching your search: %s!\n" + RESET, vendor);
         }
     }
 
@@ -522,15 +558,15 @@ public class FinancialTracker {
             }
 
             if (!hasCriteria) {
-                System.out.println("\nNo search criteria entered. Returning all transactions");
+                System.out.println(WHITE + "\nNo search criteria entered. Returning all transactions" + RESET);
             }
 
             if (hasCriteria && !found) {
-                System.out.println("\nNo transactions found based on your search criteria");
+                System.out.println(WHITE + "\nNo transactions found based on your search criteria" + RESET);
             }
 
         } catch (Exception exception) {
-            System.out.println("Error occurred when checking your dates, are you sure the dates are in human language?");
+            System.out.println(RED + "Error occurred when checking your dates, are you sure the dates are in human language?" + RESET);
             System.out.println(exception.getMessage());
         }
     }
@@ -550,12 +586,18 @@ public class FinancialTracker {
         }
 
         System.out.println();
-        System.out.println("        \uD83C\uDF55  Welcome to PizzaLedger  \uD83C\uDF55");
-        System.out.println("==============================================");
-        System.out.println("Manage your pizza shop sales and purchases");
-        System.out.println("with reports where every slice counts!\n");
+        System.out.println(RED + BOLD + "        \uD83C\uDF55  Welcome to PizzaLedger  \uD83C\uDF55");
+        System.out.println(BOLD_YELLOW + "==============================================");
+        System.out.println(ORANGE + "Manage your pizza shop sales and purchases");
+        System.out.println("with reports where every slice counts!\n" + RESET);
         System.out.println("Today's Date: " + LocalDate.now());
-        System.out.printf("Current Balance: $%.2f\n\n", totalBalance);
+        if (totalBalance > 0) {
+            System.out.printf(GREEN + "Current Balance: $%.2f\n\n" + RESET, totalBalance);
+        } else if (totalBalance == 0) {
+            System.out.printf("Current Balance: $%.2f\n\n", totalBalance);
+        } else {
+            System.out.printf(RED + "Current Balance: $%.2f\n\n" + RESET, totalBalance);
+        }
     }
 
     /**
@@ -564,23 +606,26 @@ public class FinancialTracker {
     private static void displayWelcomeArt() {
         String characterToRepeat = "\\";
 
-        String pizzaStore = "   ______________________________________________\n" +
-                "  /      _ _ - -                         __--    \\\n" +
-                " /  _-               _ -  _ -    _-               \\\n" +
-                "/__________________________________________________\\\n" +
-                " |       __________________________________       |\n" +
-                " |      /" + characterToRepeat.repeat(35) + "      |\n" +
-                " |     /" + characterToRepeat.repeat(37) + "     |\n" +
-                " |  __ UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU __  |\n" +
-                " | |%%| |  ___________________   _________ | |%%| |\n" +
-                " | |%%| | | P | I | Z | Z | A |  || _ _ || | |%%| |\n" +
-                " | |%%| | |   |   |   |   |   |  |||_|_||| | |%%| |\n" +
-                " | |%%| | |___|___|___|___|___|  |||_|_||| | |%%| |\n" +
-                " | ==== | |%%%|%%%|%%%|%%%|%%%|  ||     || | ==== |\n" +
-                " |      | |%%%|%%%|%%%|%%%|%%%|  ||o    || |      |\n" +
-                " |______| =====================  ||     || |______|\n" +
-                "________|________________________||_____||_|________\n" +
-                "_________________________________/_______\\__________";
+        String pizzaStore =
+                WHITE + "   ______________________________________________\n" +
+                        "  /      _ _ - -                         __--    \\\n" +
+                        " /  _-               _ -  _ -    _-               \\\n" +
+                        "/__________________________________________________\\\n" + RESET +
+
+                        WHITE + " |       __________________________________       |\n" +
+                        " |      /" + GRAY + characterToRepeat.repeat(35) + WHITE + "      |\n" +
+                        " |     /" + GRAY + characterToRepeat.repeat(37) + WHITE + "     |\n" +
+                        " |  __ " + RED + "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU" + RESET + " __  |\n" +
+                        WHITE + " | |%%| |  ___________________   _________ | |%%| |\n" +
+                        " | |%%| | | " + BOLD_YELLOW + "P | I | Z | Z | A" + WHITE + " |  || " + ORANGE + "_ _" + WHITE + " || | |%%| |\n" +
+                        " | |%%| | |   |   |   |   |   |  ||" + ORANGE + "|_|_|" + WHITE + "|| | |%%| |\n" +
+                        " | |%%| | |___|___|___|___|___|  ||" + RED + "|_|_|" + WHITE + "|| | |%%| |\n" +
+                        " | ==== | |%%%|%%%|%%%|%%%|%%%|  ||     || | ==== |\n" +
+                        " |      | |%%%|%%%|%%%|%%%|%%%|  ||o    || |      |\n" +
+                        " |______| =====================  ||     || |______|\n" +
+                        GRAY + "________" + WHITE + "|________________________||_____||_|" + GRAY + "________\n" +
+                        GRAY + "_________________________________/_______\\__________" + RESET;
+
         System.out.println(pizzaStore);
     }
 
