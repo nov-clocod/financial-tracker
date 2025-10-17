@@ -54,14 +54,10 @@ Navigating menus:
 
 ## Future Work
 
-Outline potential future enhancements or functionalities you might consider adding:
-
 - Separating similar function into different classes
 - Asking user to re-enter information on individual prompt rather than losing the input and going through the prompts again
 
 ## Resources
-
-List resources such as tutorials, articles, or documentation that helped you during the project.
 
 - [String Formatting](https://www.w3schools.com/java/ref_string_format.asp)
 - [String Repeat](https://stackoverflow.com/questions/1235179/simple-way-to-repeat-a-string)
