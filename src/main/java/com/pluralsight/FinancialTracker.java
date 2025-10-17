@@ -139,7 +139,12 @@ public class FinancialTracker {
 
             System.out.println("Enter the total price (positive number): ");
             String stringInputDepositAmount = scanner.nextLine().trim();
-            double userDepositAmount = parseDouble(stringInputDepositAmount);
+            double userDepositAmount = Double.parseDouble(stringInputDepositAmount);
+
+            if (userDepositAmount <= 0) {
+                System.out.println(RED + "\nSorry, only positives are allowed in this place\n" + RESET);
+                return;
+            }
 
             LocalDate userDepositDate = userInputDepositDateTime.toLocalDate();
             LocalTime userDepositTime = userInputDepositDateTime.toLocalTime();
@@ -188,8 +193,14 @@ public class FinancialTracker {
 
             System.out.println("Enter the total price (positive number): ");
             String stringInputDepositAmount = scanner.nextLine().trim();
-            double userPaymentAmount = parseDouble("-" + stringInputDepositAmount);
+            double userInputPaymentAmount = Double.parseDouble(stringInputDepositAmount);
 
+            if (userInputPaymentAmount <= 0) {
+                System.out.println(RED + "\nSorry, only positives are allowed in this place\n" + RESET);
+                return;
+            }
+
+            double userPaymentAmount = parseDouble("-" + stringInputDepositAmount);
             LocalDate userPaymentDate = userInputPaymentDateTime.toLocalDate();
             LocalTime userPaymentTime = userInputPaymentDateTime.toLocalTime();
 
