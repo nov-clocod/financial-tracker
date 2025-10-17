@@ -459,7 +459,7 @@ public class FinancialTracker {
                     reportSum += transaction.getAmount();
                 } else {
                     System.out.println(RED + transaction + RESET);
-                    reportSum -= transaction.getAmount();
+                    reportSum += transaction.getAmount();
                 }
                 found = true;
             }
@@ -470,6 +470,7 @@ public class FinancialTracker {
                 System.out.println("---------------------------------------------------------------------------------------");
                 System.out.printf(BOLD + GREEN + "Total profit for this report: %.2f!\n" + RESET, reportSum);
             } else {
+                System.out.println("---------------------------------------------------------------------------------------");
                 System.out.printf(BOLD+ RED + "Total loss for this report: %.2f\n" + RESET, reportSum);
             }
         } else {
